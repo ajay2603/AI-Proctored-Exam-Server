@@ -1,0 +1,40 @@
+import "dotenv/config";
+import express, { Request, Response } from "express";
+import cors from "cors";
+import cookirParser from "cookie-parser";
+const app = express();
+
+// Middleware for parsing JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookirParser());
+app.use(express.static("public"));
+app.use(
+  cors({
+    origin: process.env.CORS_SITES?.split(","),
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+import authRoutes from "./routes/auth";
+app.use("/auth", authRoutes);
+
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({
+    title: "AI Proctored Exam",
+    college: "SRKR Engineering College",
+    branch: "Artificial Intelligence and Data Science",
+    mentor: "Dr. Kishore Raju",
+    lead: "Narendra",
+    developers: ["Narendra", "Sujith", "Atchuta Rama Raju Jampana", "Chandu"],
+    team: 7,
+    description: "This project is a part of our final year project.",
+  });
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log("Server is running on port " + port);
+});
