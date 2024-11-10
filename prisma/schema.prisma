@@ -24,4 +24,3 @@ model ValidToken {
   token     String   @unique
   createdAt DateTime @default(now()) // Timestamp when the token is created
 }
-
