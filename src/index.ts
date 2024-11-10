@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import cookirParser from "cookie-parser";
+import "./tokens/clean_expired_tokens";
 const app = express();
 
 // Middleware for parsing JSON and URL-encoded data

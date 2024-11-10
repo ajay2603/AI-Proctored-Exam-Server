@@ -18,7 +18,7 @@ export default async function authRefreshToken(
   try {
     const paylode = jwt.verify(token, process.env.JWT_REFRESH_SECRET as string);
     res.locals.jwtPayload = paylode;
-    prisma.validTokens.delete({ where: { token } }).catch(() => {});
+    prisma.validToken.delete({ where: { token } }).catch(() => {});
     next();
   } catch (error) {
     console.log(error);

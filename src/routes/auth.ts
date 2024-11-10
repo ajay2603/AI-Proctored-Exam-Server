@@ -56,7 +56,7 @@ router.post("/sign-in", async (req, res): Promise<any> => {
     const existingToken = req.cookies.token;
 
     if (existingToken) {
-      prisma.validTokens
+      prisma.validToken
         .delete({ where: { token: existingToken } })
         .catch(() => {});
     }
@@ -85,7 +85,7 @@ router.post("/sign-in", async (req, res): Promise<any> => {
       }
     );
 
-    prisma.validTokens
+    prisma.validToken
       .create({ data: { token: refreshToken } })
       .catch(() => {});
 
@@ -121,7 +121,7 @@ router.post(
     );
 
     try {
-      await prisma.validTokens.create({ data: { token: refreshToken } });
+      await prisma.validToken.create({ data: { token: refreshToken } });
       res.cookie("token", refreshToken, {
         httpOnly: true,
         secure: true,
