@@ -11,18 +11,12 @@ router.post("/", AuthAccessToken, async (req, res): Promise<any> => {
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: res.locals.jwtPayload.id },
-    });
-
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    const id = res.locals.jwtPayload.id;
 
     await prisma.exam.create({
       data: {
         title: req.body.title,
-        author: { connect: { id: user.id } },
+        author: { connect: { id } },
       },
     });
 

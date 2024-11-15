@@ -8,7 +8,9 @@ export default function authAccessToken(
   const token = req.headers.authorization; // Assuming token is stored in a cookie
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    next("Unauthorized");
+    return;
   }
 
   try {
@@ -18,6 +20,8 @@ export default function authAccessToken(
     next();
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    next("Unauthorized");
+    return;
   }
 }
