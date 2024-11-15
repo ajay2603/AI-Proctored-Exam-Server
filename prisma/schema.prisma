@@ -18,9 +18,52 @@ model User {
   email    String  @unique
   name     String?
   password String
+  exams    Exam[]
 }
 
 model ValidToken {
   token     String   @unique
   createdAt DateTime @default(now()) // Timestamp when the token is created
+}
+
+model Exam {
+  id        String     @id @default(uuid())
+  title     String
+  author    User       @relation(fields: [id], references: [id])
+  questions Question[]
+  created   DateTime   @default(now())
+  startTime DateTime?
+  endtime   DateTime?
+}
+
+model Question {
+  id      String            @id @default(uuid())
+  context QuestionContext[]
+  options Options[]
+  answer  String?
+  exam    Exam              @relation(fields: [id], references: [id])
+}
+
+model QuestionContext {
+  question     Question @relation(fields: [id], references: [id])
+  id           String   @id @default(uuid())
+  linePosition Int?
+  type         String?
+  url          String?
+  text         String?
+}
+
+model Options {
+  id       String          @id
+  context  OptionContext[]
+  question Question        @relation(fields: [id], references: [id])
+}
+
+model OptionContext {
+  id           String  @id @default(uuid())
+  type         String?
+  url          String?
+  text         String?
+  linePosition Int?
+  option       Options @relation(fields: [id], references: [id])
 }

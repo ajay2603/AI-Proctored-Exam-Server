@@ -20,6 +20,8 @@ app.use(
 
 import authRoutes from "./routes/auth";
 app.use("/auth", authRoutes);
+import examCreationRoutes from "./routes/exam/create";
+app.use("/exam/create", examCreationRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
