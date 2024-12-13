@@ -9,7 +9,9 @@ export default async function authRefreshToken(
   res: Response,
   next: NextFunction
 ): Promise<any> {
-  const token = req.cookies.refreshToken; // Assuming token is stored in a cookie
+  const token = req.cookies.token; // Assuming token is stored in a cookie
+
+  console.log(token);
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });

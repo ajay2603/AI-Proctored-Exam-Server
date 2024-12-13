@@ -1,11 +1,11 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import cookirParser from "cookie-parser";
 import "./tokens/clean_expired_tokens";
 const app = express();
 
-// Middleware for parsing JSON and URL-encoded data
+dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookirParser());
