@@ -18,7 +18,7 @@ app.use(
   })
 );
 
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/auth/auth";
 app.use("/auth", authRoutes);
 import examCreationRoutes from "./routes/exam/create";
 app.use("/exam/create", examCreationRoutes);
@@ -35,6 +35,9 @@ app.get("/", (req: Request, res: Response) => {
     description: "This project is a part of our final year project.",
   });
 });
+
+import { startRedisServer } from "./utils/redis";
+startRedisServer();
 
 const port = process.env.PORT || 3000;
 

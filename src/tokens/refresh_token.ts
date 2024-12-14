@@ -11,8 +11,6 @@ export default async function authRefreshToken(
 ): Promise<any> {
   const token = req.cookies.token; // Assuming token is stored in a cookie
 
-  console.log(token);
-
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -23,7 +21,7 @@ export default async function authRefreshToken(
     prisma.validToken.delete({ where: { token } }).catch(() => {});
     next();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(401).json({ message: "Unauthorized" });
   }
 }

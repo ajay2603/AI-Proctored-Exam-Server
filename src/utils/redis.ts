@@ -7,9 +7,13 @@ const redis: RedisClientType = createClient({
   },
 });
 
-redis
-  .connect()
-  .then((_) => console.log("Redis conneted"))
-  .catch((err) => console.error("Redis connection failed\n" + err));
+const startRedisServer = () => {
+  console.log("Connecting to Redis...");
+  redis
+    .connect()
+    .then((_) => console.log("Redis conneted"))
+    .catch((err) => console.error("Redis connection failed\n" + err));
+};
 
 export default redis;
+export { startRedisServer };
