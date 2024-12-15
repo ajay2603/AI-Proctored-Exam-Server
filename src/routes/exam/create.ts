@@ -13,14 +13,20 @@ router.post("/", AuthAccessToken, async (req, res): Promise<any> => {
   try {
     const id = res.locals.jwtPayload.id;
 
-    await prisma.exam.create({
+    const exam = await prisma.exam.create({
       data: {
         title: req.body.title,
         author: { connect: { id } },
       },
     });
 
-    return res.status(201).json({ message: "Exam created successfully" });
+    return res
+      .status(201)
+      .json({
+        message: "Exam created successfully",
+        id: exam.id,
+        authorId: exam.authorId,
+      });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
