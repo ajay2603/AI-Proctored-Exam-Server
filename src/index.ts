@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookirParser());
 app.use(express.static("public"));
+app.use(express.raw({ type: "image/*", limit: "5mb" }));
 app.use(
   cors({
     origin: process.env.CORS_SITES?.split(","),
@@ -22,6 +23,10 @@ import authRoutes from "./routes/auth/auth";
 app.use("/auth", authRoutes);
 import examCreationRoutes from "./routes/exam/create";
 app.use("/exam/create", examCreationRoutes);
+import driveRoutes from "./routes/drive/drive_uplode";
+app.use("/drive", driveRoutes);
+import get_image from "./routes/drive/get_image";
+app.use("/drive", get_image);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -38,6 +43,15 @@ app.get("/", (req: Request, res: Response) => {
 
 import { startRedisServer } from "./utils/redis";
 startRedisServer();
+
+import { initiateDrive } from "./utils/google_drive/google_drive";
+initiateDrive()
+  .then((driveStatus) => {
+    console.log("Google Drive is ready to use");
+  })
+  .catch((err) => {
+    console.log("Error in Google Drive: ", err);
+  });
 
 const port = process.env.PORT || 3000;
 

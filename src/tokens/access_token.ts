@@ -5,7 +5,7 @@ export default function authAccessToken(
   res: Response,
   next: NextFunction
 ): any {
-  const token = req.headers.authorization; // Assuming token is stored in a cookie
+  const token = req.headers.authorization;
 
   if (!token) {
     res.status(401).json({ message: "Unauthorized" });
