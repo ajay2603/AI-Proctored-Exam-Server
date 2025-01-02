@@ -4,7 +4,7 @@ import path from "path";
 // Use absolute path to the credentials JSON file
 const credentialsPath = path.resolve(
   __dirname,
-  "../../../ai-exam-445907-e7cc7cdc3660.json"
+  `../../../${process.env.GOOGLE_CREDENTIALS}`
 );
 
 const auth = new google.auth.GoogleAuth({
