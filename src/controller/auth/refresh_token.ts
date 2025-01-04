@@ -1,13 +1,12 @@
 import jwt from "jsonwebtoken";
-import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
-import authRefreshToken from "../../tokens/refresh_token";
-
+import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
-const router = Router();
-
-router.post("/", authRefreshToken, async (req, res): Promise<any> => {
+export default async function RefreshTokenController(
+  req: Request,
+  res: Response
+): Promise<any> {
   const paylode = res.locals.jwtPayload;
   try {
     const user = await prisma.user.findFirst({
@@ -47,6 +46,4 @@ router.post("/", authRefreshToken, async (req, res): Promise<any> => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-});
-
-export default router;
+}

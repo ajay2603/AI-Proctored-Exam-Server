@@ -1,13 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
-
+import { Request, Response } from "express";
 const prisma = new PrismaClient();
-const router = Router();
 
-router.post("/", async (req, res): Promise<any> => {
-
+export default async function SignInController(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -62,6 +62,4 @@ router.post("/", async (req, res): Promise<any> => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-});
-
-export default router;
+}

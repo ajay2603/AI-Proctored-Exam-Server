@@ -21,12 +21,10 @@ app.use(
 
 import authRoutes from "./routes/auth/auth";
 app.use("/auth", authRoutes);
-import examCreationRoutes from "./routes/exam/create";
-app.use("/exam/create", examCreationRoutes);
-import driveRoutes from "./routes/drive/drive_uplode";
-app.use("/drive", driveRoutes);
-import get_image from "./routes/drive/get_image";
-app.use("/drive", get_image);
+import examRoutes from "./routes/exam/exam";
+app.use("/exam", examRoutes);
+import googleDriveRoutes from "./routes/drive/google_drive";
+app.use("/drive", googleDriveRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({

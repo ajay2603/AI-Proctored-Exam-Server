@@ -1,10 +1,8 @@
 import { google } from "googleapis";
 import path from "path";
 
-// Use absolute path to the credentials JSON file
 const credentialsPath = path.resolve(
-  __dirname,
-  `../../../${process.env.GOOGLE_CREDENTIALS}`
+  `${__dirname + "/" + `../../../${process.env.GOOGLE_CREDENTIALS}`}`
 );
 
 const auth = new google.auth.GoogleAuth({

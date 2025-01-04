@@ -1,13 +1,11 @@
 import bcrypt from "bcryptjs";
-import { Router } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
+import { Request, Response } from "express";
 import generateOTP from "../../utils/generate-otp";
 import sendOTP from "../../utils/mail/send_otp";
 import redis from "../../utils/redis";
 
 const prisma = new PrismaClient();
-
-const router = Router();
 
 interface User {
   name: string;
@@ -15,7 +13,10 @@ interface User {
   password: string;
 }
 
-router.post("/", async (req, res): Promise<any> => {
+export default async function SignUpController(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { name, email, password, confirmPassword } = req.body;
 
   if (!name || !email || !password || !confirmPassword) {
@@ -59,32 +60,4 @@ router.post("/", async (req, res): Promise<any> => {
 
     return res.status(500).json({ message: "Internal server error" });
   }
-});
-
-router.post("/verify-otp", async (req, res): Promise<any> => {
-  const { email, otp } = req.body;
-  try {
-    const details: string = (await redis.get(email)) || "null";
-    const redisUserData = JSON.parse(details);
-
-    if (!redisUserData) {
-      return res.status(410).json({ message: "OTP Expired" });
-    }
-
-    if (redisUserData.otp != otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
-
-    const user = redisUserData.userDetails;
-
-    await prisma.user.create({ data: user });
-    redis.DUMP(user.email);
-    return res.status(200).json({ message: "User created successfully" });
-  } catch (err) {
-    console.log("Error occured");
-    console.error(err);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-export default router;
+}
