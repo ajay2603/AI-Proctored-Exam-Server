@@ -104,7 +104,11 @@ export function checkValidQuestion(question: any): boolean {
     return false;
   }
 
-  if (!question.question || !question.option || !question.answer) {
+  if (
+    !question.question ||
+    !question.option ||
+    typeof question.answer !== "number"
+  ) {
     return false;
   }
 
@@ -124,27 +128,24 @@ export function checkValidQuestion(question: any): boolean {
     return false;
   }
 
-  question.question.forEach((q: any) => {
-    if (!q.type || !q.content) {
+  // Validate question array
+  for (const q of question.question) {
+    if (!q.type || !q.content || (q.type !== "image" && q.type !== "text")) {
       return false;
     }
+  }
 
-    if (q.type !== "image" && q.type !== "text") {
+  // Validate options array
+  for (const opt of question.option) {
+    if (!Array.isArray(opt)) {
       return false;
     }
-  });
-
-  question.option.forEach((opt: any) => {
-    opt.forEach((o: any) => {
-      if (!o.type || !o.content) {
+    for (const o of opt) {
+      if (!o.type || !o.content || (o.type !== "image" && o.type !== "text")) {
         return false;
       }
-
-      if (o.type !== "image" && o.type !== "text") {
-        return false;
-      }
-    });
-  });
+    }
+  }
 
   return true;
 }
