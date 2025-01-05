@@ -70,13 +70,16 @@ export default async function QuestionCreateController(
     });
 
     // Step 2: Create the QuestionContext (for question content like text/image)
-    const questionContexts = req.body.question.map((context: any) => {
-      return {
-        type: context.type,
-        text: context.type === "text" ? context.content : null,
-        url: context.type === "image" ? context.content : null,
-      };
-    });
+    const questionContexts = req.body.question.map(
+      (context: any, index: number) => {
+        return {
+          linePosition: index,
+          type: context.type,
+          text: context.type === "text" ? context.content : null,
+          url: context.type === "image" ? context.content : null,
+        };
+      }
+    );
 
     // Insert all the contexts for the question
     await prisma.questionContext.createMany({
@@ -99,7 +102,8 @@ export default async function QuestionCreateController(
           id: optionId,
           questionId: question.id,
           context: {
-            create: option.map((opt: any) => ({
+            create: option.map((opt: any, index: number) => ({
+              linePosition: index,
               type: opt.type,
               text: opt.type === "text" ? opt.content : null,
               url: opt.type === "image" ? opt.content : null,

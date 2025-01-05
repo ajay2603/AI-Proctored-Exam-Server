@@ -50,7 +50,7 @@ model QuestionContext {
   id           String   @id @default(uuid())
   question     Question @relation(fields: [questionId], references: [id])
   questionId   String
-  linePosition Int?
+  linePosition Int      @default(autoincrement())
   type         String?
   url          String?
   text         String?
@@ -70,5 +70,5 @@ model OptionContext {
   type         String?
   url          String?
   text         String?
-  linePosition Int?
+  linePosition Int     @default(autoincrement())
 }

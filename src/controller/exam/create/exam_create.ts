@@ -6,7 +6,6 @@ export default async function ExamCreateController(
   req: Request,
   res: Response
 ): Promise<any> {
-  console.log(req.body);
   if (!req.body.title) {
     return res.status(400).json({ message: "Title is missing" });
   }
