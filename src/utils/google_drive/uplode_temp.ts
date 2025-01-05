@@ -4,6 +4,8 @@ import getOrCreateFolderId from "./folder";
 import getRootFolderId from "./root_folder";
 import { v4 as uuid } from "uuid";
 
+const rootFolderId = getRootFolderId().then((id) => id)
+
 export default async function uplodeTemp(
   file: Express.Multer.File
 ): Promise<any> {

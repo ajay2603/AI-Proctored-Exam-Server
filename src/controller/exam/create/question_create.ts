@@ -1,12 +1,17 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuid } from "uuid";
+import isValidTemp from "../../../routes/drive/valid_temp";
+import getRootFolderId from "../../../utils/google_drive/root_folder";
+import getOrCreateFolderId from "../../../utils/google_drive/folder";
+import uplodeUser from "../../../utils/google_drive/uplode_user";
 const prisma = new PrismaClient();
 
 export default async function QuestionCreateController(
   req: Request,
   res: Response
 ): Promise<any> {
+  console.log(req.body);
   if (!checkValidQuestion(req.body)) {
     return res.status(400).json({ message: "Invalid question structure" });
   }
@@ -24,7 +29,38 @@ export default async function QuestionCreateController(
     return res.status(403).json({ message: "Unauthorized to this exam" });
   }
 
+  const questionImages = req.body.question
+    .filter((q: { type: string; content: string }) => q.type === "image")
+    .map((q: { content: string }) => q.content);
+
+  const optionImages = req.body.option
+    .flatMap((opt: Array<{ type: string; content: string }>) =>
+      opt.filter((o: { type: string }) => o.type === "image")
+    )
+    .map((o: { content: string }) => o.content);
+
+  const images = [...questionImages, ...optionImages];
+  console.log(images);
+
   try {
+    const validateImages = images.map((image) => {
+      return isValidTemp(image);
+    });
+
+    const validatedImages = await Promise.all(validateImages);
+
+    if (validatedImages.indexOf(false) !== -1) {
+      return res.status(410).json({
+        message: "Expired or InValid Image found. Check again",
+      });
+    }
+
+    const rootFolderId = await getRootFolderId();
+    const tempFolderId = await getOrCreateFolderId("tempory", rootFolderId);
+    const userFolderId = await getOrCreateFolderId(userId, rootFolderId);
+
+    images.map((imageId) => uplodeUser(imageId, userFolderId, tempFolderId));
+
     // Step 1: Create the Question Record
     const question = await prisma.question.create({
       data: {
@@ -83,22 +119,6 @@ export default async function QuestionCreateController(
   }
 }
 
-/*
-  const questionImages = req.body.question
-      .filter((q: { type: string; content: string }) => q.type === "image")
-      .map((q: { content: string }) => q.content);
-
-    const optionImages = req.body.option
-      .flatMap((opt: Array<{ type: string; content: string }>) =>
-        opt.filter((o: { type: string }) => o.type === "image")
-      )
-      .map((o: { content: string }) => o.content);
-
-    const images = [...questionImages, ...optionImages];
-    console.log("Images:");
-    console.log(images);
-*/
-
 export function checkValidQuestion(question: any): boolean {
   if (!question) {
     return false;
@@ -130,7 +150,11 @@ export function checkValidQuestion(question: any): boolean {
 
   // Validate question array
   for (const q of question.question) {
-    if (!q.type || !q.content || (q.type !== "image" && q.type !== "text")) {
+    if (
+      !q.type ||
+      q.content === undefined ||
+      (q.type !== "image" && q.type !== "text")
+    ) {
       return false;
     }
   }
@@ -141,7 +165,11 @@ export function checkValidQuestion(question: any): boolean {
       return false;
     }
     for (const o of opt) {
-      if (!o.type || !o.content || (o.type !== "image" && o.type !== "text")) {
+      if (
+        !o.type ||
+        o.content === undefined ||
+        (o.type !== "image" && o.type !== "text")
+      ) {
         return false;
       }
     }

@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import path from "path";
+import clearTempDrive from "./clean_temp";
 
 const credentialsPath = path.resolve(
   `${__dirname + "/" + `../../../${process.env.GOOGLE_CREDENTIALS}`}`
@@ -19,6 +20,7 @@ const drive = google.drive({
 export async function initiateDrive() {
   try {
     // Fetch about info of the authenticated user
+    clearTempDrive();
     const driveStatus = await drive.about.get({
       fields: "user,storageQuota", // Request specific fields
     });
