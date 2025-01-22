@@ -72,3 +72,11 @@ model OptionContext {
   text         String?
   linePosition Int     @default(autoincrement())
 }
+
+model UserResult {
+  id     String   @id @default(uuid())
+  userId String
+  examId String
+  score  Int
+  time   DateTime @default(now())
+}
