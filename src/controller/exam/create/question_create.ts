@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuid } from "uuid";
-import isValidTemp from "../../../routes/drive/valid_temp";
+import isValidTemp from "../../../utils/google_drive/valid_temp";
 import getRootFolderId from "../../../utils/google_drive/root_folder";
 import getOrCreateFolderId from "../../../utils/google_drive/folder";
 import uplodeUser from "../../../utils/google_drive/uplode_user";

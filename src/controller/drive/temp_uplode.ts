@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import uplodeTemp from "../../utils/google_drive/uplode_temp";
+import drive from "../../utils/google_drive/google_drive";
 
 export default async function TempUplodeController(
   req: Request,
@@ -12,6 +13,14 @@ export default async function TempUplodeController(
   if (!req.file.mimetype.startsWith("image")) {
     return res.status(400).json({ message: "Only images are allowed" });
   }
+
+  const rfid = req.body.fileId;
+  console.log("rem file: " + req.body.fileId);
+  if (rfid)
+    drive.files
+      .delete({ fileId: rfid })
+      .then((_) => console.log("prev file removed"))
+      .catch((err) => console.error(err));
 
   try {
     const newfile = await uplodeTemp(req.file);

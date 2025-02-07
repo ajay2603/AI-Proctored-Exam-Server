@@ -11,6 +11,7 @@ export default async function uplodeTemp(
 ): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
+
       const rootFolderId = await getRootFolderId();
       const folderId = await getOrCreateFolderId("tempory", rootFolderId);
 

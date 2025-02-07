@@ -17,6 +17,7 @@ model User {
   id       String  @id @default(uuid())
   email    String  @unique
   name     String?
+  image    String
   password String
   exams    Exam[]
 }
@@ -74,9 +75,10 @@ model OptionContext {
 }
 
 model UserResult {
-  id     String   @id @default(uuid())
-  userId String
-  examId String
-  score  Int
-  time   DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  examId    String
+  score     Int
+  time      DateTime @default(now())
+  isCheated Boolean
 }

@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import generateOTP from "../../utils/generate-otp";
 import sendOTP from "../../utils/mail/send_otp";
 import redis from "../../utils/redis";
+import isValidTemp from "../../utils/google_drive/valid_temp";
 
 const prisma = new PrismaClient();
 
@@ -11,15 +12,16 @@ interface User {
   name: string;
   email: string;
   password: string;
+  image: string;
 }
 
 export default async function SignUpController(
   req: Request,
   res: Response
 ): Promise<any> {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword, image } = req.body;
 
-  if (!name || !email || !password || !confirmPassword) {
+  if (!name || !email || !password || !confirmPassword || !image) {
     return res.status(400).json({ message: "Found missing fields" });
   }
 
@@ -38,10 +40,14 @@ export default async function SignUpController(
       return res.status(409).json({ message: "Email Already Registered" });
     }
 
+    if(!await isValidTemp(image)){
+      return res.status(400).json({message: "Invalid Image or Time out"})
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const otp = generateOTP();
-    const user: User = { name, email, password: hashedPassword };
+    const user: User = { name, email, password: hashedPassword, image };
     const redisUserData = { userDetails: user, otp };
     await redis.set(email, JSON.stringify(redisUserData), { EX: 300 });
     const date = Date.now() + 5 * 60 * 1000;

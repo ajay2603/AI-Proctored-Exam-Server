@@ -1,4 +1,4 @@
-import drive from "../../utils/google_drive/google_drive";
+import drive from "./google_drive";
 
 export default function isValidTemp(fileId: string) {
   return new Promise(async (resolve: any, reject: any) => {

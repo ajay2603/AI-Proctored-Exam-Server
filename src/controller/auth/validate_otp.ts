@@ -1,6 +1,10 @@
 import redis from "../../utils/redis";
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import isValidTemp from "../../utils/google_drive/valid_temp";
+import drive from "../../utils/google_drive/google_drive";
+import getRootFolderId from "../../utils/google_drive/root_folder";
+import getOrCreateFolderId from "../../utils/google_drive/folder";
 
 const prisma = new PrismaClient();
 
@@ -22,6 +26,21 @@ export default async function ValidateOTPController(
     }
 
     const user = redisUserData.userDetails;
+    console.log(user.image)
+    if (!await isValidTemp(user.image)) {
+      return res
+        .status(410)
+        .json({ message: "Uploded Image Expired Try Again" });
+    }
+
+    const rootFolderId = await getRootFolderId();
+    const tempFolderId = await getOrCreateFolderId("tempory", rootFolderId);
+
+    drive.files.update({
+      fileId: user.image,
+      addParents: rootFolderId,
+      removeParents: tempFolderId,
+    });
 
     await prisma.user.create({ data: user });
     redis.DUMP(user.email);

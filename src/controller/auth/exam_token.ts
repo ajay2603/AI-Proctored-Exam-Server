@@ -44,11 +44,8 @@ export async function ValidateExamToken(
   res: Response,
   next: NextFunction
 ): Promise<any> {
-  console.log("hrllo this osmlv");
-
   const token: string = req.headers.authorization || "";
 
-  console.log(token);
   try {
     var paylode = JWT.verify(token, process.env.JWT_EXAM_SECRET as string);
   } catch (err) {
