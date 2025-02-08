@@ -11,6 +11,6 @@ router.post("/submit", ValidateExamToken, SubmitExam);
 import ExamCreateRoutes from "./create";
 router.use("/create", ExamCreateRoutes);
 import ExamReadRoutes from "./read";
-router.use("/", ExamReadRoutes);
+router.use("/read", ExamReadRoutes);
 
 export default router;

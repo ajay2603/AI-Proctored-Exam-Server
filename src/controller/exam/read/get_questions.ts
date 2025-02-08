@@ -11,6 +11,7 @@ export default async function GetQuestionsController(
 
   try {
     const exam = await prisma.exam.findUnique({ where: { id: examId } });
+
     if (!exam) {
       return res.status(404).json({ message: "Exam not found" });
     }
@@ -33,9 +34,9 @@ export default async function GetQuestionsController(
       },
     });
 
-    res.status(200).json({ questions: questions ? questions : [] });
+    return res.status(200).json({ questions: questions ? questions : [] });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
