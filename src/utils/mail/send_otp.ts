@@ -9,5 +9,8 @@ export default function sendOTP(email: string, otp: number) {
       text: `Your OTP is ${otp}`,
     })
     .then((_) => console.log(_))
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.log("Error Occured");
+      console.error(err);
+    });
 }
